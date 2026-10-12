@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中性原子量子计算知识地图</title>
+<meta name="description" content="从激光冷却到容错量子计算：中性原子量子计算的实验流程图、知识树、掌握清单与核对过的文献。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2313917F' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2313917F'/%3E%3C/svg%3E">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="masthead">
+  <div class="wrap">
+    <h1>中性原子量子计算<br class="br-m">知识地图</h1>
+    <p class="intro">一台中性原子量子计算机从装载原子到给出结果，每一步都依赖哪些物理。点开流程里的任何一步，就能看到它背后要掌握的知识、前置知识树和该读的文献。</p>
+    <p class="stats" id="stats"></p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="视图">
+  <div class="wrap tabs-in" role="tablist">
+    <button role="tab" id="t-flow" data-view="flow" aria-selected="true">实验流程</button>
+    <button role="tab" id="t-tree" data-view="tree" aria-selected="false">知识树</button>
+    <button role="tab" id="t-read" data-view="read" aria-selected="false">文献</button>
+    <button role="tab" id="t-terms" data-view="terms" aria-selected="false">术语</button>
+  </div>
+</nav>
+
+<main id="main" class="wrap">
+  <section class="view" data-view="flow" aria-labelledby="t-flow">
+    <div class="flow-layout">
+      <div class="flow-col">
+        <div class="board" id="board">
+          <svg class="board-svg" id="board-svg" aria-hidden="true"></svg>
+          <ol class="steps" id="steps"></ol>
+        </div>
+        <p class="hint">时间为常见量级，因实验组和原子种类而异。第 9 步之后回到第 1 步；整个循环通常每秒重复约一次到几次，由装载和成像主导。</p>
+      </div>
+      <aside class="panel" id="step-panel" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <section class="view" data-view="tree" aria-labelledby="t-tree" hidden>
+    <div class="tree-head">
+      <p class="lead">23 个模块按八层组织，从基础理论一直到产业格局。悬停一个模块会画出它的前置（实线）与后续（虚线）；点击查看完整清单。</p>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="tree" id="tree">
+      <svg class="tree-svg" id="tree-svg" aria-hidden="true"></svg>
+      <div class="tree-root" id="tree-root"><span>中性原子<br>量子计算</span></div>
+      <div class="tree-layers" id="tree-layers"></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="read" aria-labelledby="t-read" hidden>
+    <figure class="timeline-fig">
+      <figcaption>里程碑时间线 <span>实心为实验，空心为理论提案；点击打开论文</span></figcaption>
+      <div class="timeline" id="timeline"></div>
+    </figure>
+    <div class="filters">
+      <input type="search" id="rq" placeholder="搜索作者、标题、模块编号" aria-label="搜索文献">
+      <div class="seg" id="rprio" role="group" aria-label="优先级"></div>
+      <div class="seg" id="rtype" role="group" aria-label="类型"></div>
+    </div>
+    <p class="count" id="rcount"></p>
+    <ul class="refs" id="refs"></ul>
+  </section>
+
+  <section class="view" data-view="terms" aria-labelledby="t-terms" hidden>
+    <div class="filters">
+      <input type="search" id="gq" placeholder="搜索术语，中文或英文" aria-label="搜索术语">
+    </div>
+    <p class="count" id="gcount"></p>
+    <dl class="terms" id="terms"></dl>
+  </section>
+</main>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-bg" data-close></div>
+  <article class="drawer-card" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1">
+    <button class="close" data-close aria-label="关闭">×</button>
+    <div id="drawer-body"></div>
+  </article>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>引用均在期刊页、arXiv 或官方页面核对过（2026 年 10 月）。标注“预印本”的尚未正式发表。时间与性能数字为量级参考，领域进展很快，请以最新论文为准。</p>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="tooltip"></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

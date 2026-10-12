@@ -278,3 +278,7 @@ main.wrap { padding-top: 32px; padding-bottom: 72px; }
 
 .foot { border-top: 1px solid var(--line); padding: 20px 0 40px; color: var(--faint); font-size: .84rem; }
 .foot p { max-width: 60em; margin: 0; }
+
+/* KaTeX：行内公式与正文同高，不撑开行距 */
+.katex { font-size: 1.04em; }
+.step .katex, .chip .katex { font-size: 1em; }

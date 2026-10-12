@@ -18,6 +18,15 @@
   const LV = ['核心', '熟悉', '了解'];
   const PR = { '首读': 0, '重要': 1, '延伸': 2 };
   const color = (phase) => `var(--p${phase})`;
+  // 用 KaTeX 渲染 $...$ 里的 LaTeX；KaTeX 没加载时保持原文
+  const tex = (node) => {
+    if (window.renderMathInElement) {
+      window.renderMathInElement(node, { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+    }
+    return node;
+  };
+  // 搜索时忽略 LaTeX 标记，让 “C6” 能搜到 $C_6$
+  const norm = (str) => String(str).replace(/\\(mathrm|text|mathbb|hat|vec)/g, '').replace(/[$\\{}^_]/g, '').toLowerCase();
 
   const mods = [...D.modules].sort((a, b) => a.order - b.order);
   const M = Object.fromEntries(mods.map((m) => [m.id, m]));
@@ -73,7 +82,6 @@
     termsOf(id).forEach((g) => {
       const b = el('button', 'chip', g.term);
       b.type = 'button';
-      b.title = g.explain;
       b.addEventListener('click', () => { closeDrawer(); showView('terms'); $('#gq').value = g.term; drawTerms(); });
       wrap.append(b);
     });
@@ -110,6 +118,7 @@
       return li;
     }));
     placeSteps();
+    tex(ol);
   }
   function placeSteps() {
     const cols = narrowFlow.matches ? 1 : 3;
@@ -233,6 +242,7 @@
     });
     p.append(box);
     p.append(el('h3', null, '前置知识树'), el('p', 'meta', '要真正理解这一步，需要先掌握的模块。点击任一模块查看完整清单。'), prereqTree(ids));
+    tex(p);
     p.scrollTop = 0;
     if (fromUser) {
       history.replaceState(null, '', `#s-${n}`);
@@ -349,6 +359,7 @@
     }
     $('#drawer').hidden = false;
     document.body.style.overflow = 'hidden';
+    tex(body);
     card.scrollTop = 0;
     card.focus();
     history.replaceState(null, '', `#m-${id}`);
@@ -379,7 +390,7 @@
   $('#rq').addEventListener('input', (e) => { rstate.q = e.target.value.trim().toLowerCase(); drawRefs(); });
   function drawRefs() {
     let f = D.readings.filter((r) => (!rstate.prio || r.priority === rstate.prio) && (!rstate.type || r.type === rstate.type));
-    if (rstate.q) f = f.filter((r) => (r.citation + r.short + r.modules + r.note).toLowerCase().includes(rstate.q));
+    if (rstate.q) f = f.filter((r) => norm(r.citation + r.short + r.modules + r.note).includes(norm(rstate.q)));
     f = [...f].sort((a, b) => PR[a.priority] - PR[b.priority] || (b.year || 0) - (a.year || 0));
     $('#rcount').textContent = `显示 ${f.length} 篇，共 ${D.readings.length} 篇`;
     $('#refs').replaceChildren(...f.map((r) => {
@@ -396,6 +407,7 @@
       return li;
     }));
     if (!f.length) $('#refs').append(el('li', 'count', '没有匹配的文献，换个关键词试试。'));
+    tex($('#refs'));
   }
 
   function drawTimeline() {
@@ -433,6 +445,7 @@
         c.style.cursor = 'pointer';
         const show = (ev) => {
           tip.replaceChildren(el('div', 'ty', `${r.year}，${r.type}，模块 ${r.modules}`), el('div', null, r.short), el('div', 'rn', r.note));
+          tex(tip);
           tip.style.opacity = '1';
           const pt = ev.touches ? ev.touches[0] : ev;
           const tw = 300;
@@ -452,7 +465,7 @@
   $('#gq').addEventListener('input', drawTerms);
   function drawTerms() {
     const q = $('#gq').value.trim().toLowerCase();
-    const f = D.glossary.filter((g) => !q || (g.term + g.en + g.explain + g.module).toLowerCase().includes(q))
+    const f = D.glossary.filter((g) => !q || norm(g.term + g.en + g.explain + g.module).includes(norm(q)))
       .sort((a, b) => M[a.module].order - M[b.module].order);
     $('#gcount').textContent = `显示 ${f.length} 个，共 ${D.glossary.length} 个`;
     $('#terms').replaceChildren(...f.map((g) => {
@@ -465,6 +478,7 @@
       return d;
     }));
     if (!f.length) $('#terms').append(el('p', 'count', '没有匹配的术语。'));
+    tex($('#terms'));
   }
 
   // ---------- views & routing ----------
